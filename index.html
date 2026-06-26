@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e0c;
+    --surface: #1a1814;
+    --gold: #e8b84b;
+    --gold-light: #f5d07a;
+    --cream: #f2ead8;
+    --muted: #8a8070;
+    --rule: #2e2b24;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 64px 24px 48px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: var(--gold);
+    margin: 0 auto 24px;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 8vw, 72px);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--cream);
+    margin-bottom: 16px;
+  }
+  .hero-sub {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .hero-sub a {
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  /* NAV TABS */
+  .tab-bar {
+    display: flex;
+    overflow-x: auto;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+    padding: 0 16px;
+    scrollbar-width: none;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab {
+    flex-shrink: 0;
+    padding: 18px 20px;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    white-space: nowrap;
+  }
+  .tab:hover, .tab.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* SECTIONS */
+  .page { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+
+  .menu-section {
+    display: none;
+    padding-top: 48px;
+  }
+  .menu-section.active { display: block; }
+
+  .section-header {
+    margin-bottom: 32px;
+  }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--cream);
+  }
+
+  /* CATEGORY */
+  .category { margin-bottom: 48px; }
+  .category-name {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 0;
+  }
+
+  /* ITEM ROW */
+  .item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .item:last-child { border-bottom: none; }
+  .item-name {
+    font-size: 15px;
+    color: var(--cream);
+    font-weight: 400;
+    line-height: 1.4;
+    flex: 1;
+  }
+  .item-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    color: var(--gold);
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+  .item-price::before { content: '₹'; font-size: 11px; opacity: 0.7; margin-right: 2px; }
+
+  /* COMBO CARD */
+  .combo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .combo-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .combo-card:hover { border-color: var(--gold); }
+  .combo-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--gold);
+  }
+  .combo-name {
+    font-size: 14px;
+    color: var(--cream);
+    font-weight: 500;
+    line-height: 1.5;
+    margin-bottom: 14px;
+    padding-right: 8px;
+  }
+  .combo-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold-light);
+  }
+  .combo-price::before { content: '₹'; font-size: 13px; opacity: 0.7; margin-right: 2px; }
+
+  .combo-group-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--cream);
+    margin: 36px 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .combo-group-title:first-child { margin-top: 0; }
+
+  /* DELIVERY BADGE */
+  .delivery-banner {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .delivery-banner .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+    box-shadow: 0 0 8px var(--gold);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .delivery-banner strong { color: var(--cream); }
+
+  @media (max-width: 500px) {
+    .combo-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <p class="hero-eyebrow">Full Menu</p>
+  <h1 class="hero-title">What are you<br>craving?</h1>
+  <p class="hero-sub">Home Delivery: <a href="tel:8290208727">8290208727</a></p>
+</div>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="show('drinks')">Drinks</button>
+  <button class="tab" onclick="show('food')">Food</button>
+  <button class="tab" onclick="show('mains')">Mains & More</button>
+  <button class="tab" onclick="show('combos')">Combos</button>
+</div>
+
+<div class="page">
+
+  <!-- DRINKS -->
+  <div class="menu-section active" id="drinks">
+    <div class="section-header">
+      <p class="section-label">Beverages</p>
+      <h2 class="section-title">Drinks</h2>
+    </div>
+
+    <div class="delivery-banner">
+      <span class="dot"></span>
+      <span>Home delivery available · Call <strong>8290208727</strong></span>
+    </div>
+
+    <div class="category">
+      <p class="category-name">Chai</p>
+      <div class="item"><span class="item-name">Regular Chai</span><span class="item-price">20</span></div>
+      <div class="item"><span class="item-name">Masala Chai</span><span class="item-price">25</span></div>
+    </div>
+
+    <div class="category">
+      <p class="category-name">Coffee</p>
+      <div class="item"><span class="item-name">Hot Coffee</span><span class="item-price">25</span></div>
+      <div class="item"><span class="item-name">Black Coffee</span><span class="item-price">20</span></div>
+      <div class="item"><span class="item-name">Cold Coffee</span><span class="item-price">60</span></div>
+      <div class="item"><span class="item-name">Cold Coffee With Ice Cream</span><span class="item-price">70</span></div>
+      <div class="item"><span class="item-name">Choco Brownie Frappe</span><span class="item-price">90</span></div>
+    </div>
+
+    <div class="category">
+      <p class="category-name">Shakes</p>
+      <div class="item"><span class="item-name">Mango Shake</span><span class="item-price">60</span></div>
+      <div class="item"><span class="item-name">Vanilla Shake</span><span class="item-price">60</span></div>
+      <div class="item"><span class="item-name">Banana Shake</span><span class="item-price">60</span></div>
+      <div class="item"><span class="item-name">Strawberry Shake</span><span class="item-price">70</span></div>
+      <div class="item"><span class="item-name">Chocolate Shake</span><span class="item-price">70</span></div>
+      <div class="item"><span class="item-name">ButterScotch Shake</span><span class="item-price">70</span></div>
+      <div class="item"><span class="item-name">Oreo Shake</span><span class="item-price">80</span></div>
+      <div class="item"><span class="item-name">Kit-Kat Shake</span><span class="item-price">80</span></div>
+      <div class="item"><span class="item-name">Brownie Shake</span><span class="item-price">80</span></div>
+    </div>
+
+    <div class="category">
+      <p class="category-name">Soup</p>
+      <div class="item"><span class="item-name">Veg. Coriander Soup</span><span class="item-price">50</span></div>
+      <div class="item"><span class="item-name">Tomato Soup</span><span class="item-price">50</span></div>
+      <div class="item"><span class="item-name">Hot & Sour Soup</span><span class="item-price">60</span></div>
+      <div class="item"><span class="item-name">Manchow Soup</span><span class="item-price">60</span></div>
+      <div class="item"><span class="item-name">Sweet Corn Soup</span><span class="item-price">70</span></div>
+    </div>
+  </div>
+
+  <!-- FOOD -->
+  <div class="menu-section" id="food">
+    <div class="section-header">
+      <p class="section-label">Snacks & Bites</p>
+      <h2 class="section-title">Food</h2>
+    </div>
+
+    <div class="category">
+      <p class="category-name">Patties</p>
+      <div class="item"><span class="item-name">Regular Patties</span><span class="item-price">20</span></div>
+      <div class="item"><span class="item-name">Maska Patties</span><span class="item-price">25</span></div>
+      <div class="item"><span class="item-name">Masala Patties</span><span class="item-price">30</span></div>
+      <div class="item"><span class="item-name">Cheese Masala Patties</span><span class="item-price">40</span></div>
+      <div class="item"><span class="item-name">Paneer Masala Patties</span><span class="item-price">40</span></div>
+      <div class="item"><span class="item-name">Maska Paneer Patties</span><span class="item-price">40</span></div>
+      <div class="item"><span class="item-name">Special Patties</span><span class="item-price">50</span></div>
+    </div>
+
+    <div class="category">
+      <p class="category-name">Burger</p>
+      <div class="item"><span class="item-name">Aloo Tikki Burger</span><span class="item-price">40</span></div>
+      <div class="item"><span class="item-name">Veg Burger</span><span class="item-price">50</span></div>
+      <div class="item"><span class="item-name">Veg Cheese Burger</span><span class="item-price">60</span></div>
+      <div class="item"><span class="item-name">Paneer Masala Burger</span><span class="item-price">70</span></div>
+      <div class="item"><span class="item-name">Paneer Masala Cheese Burger</span><span class="item-price">80</span></div>
+    </div>
+
+    <div class="category">
+      <p class="category-name">Sandwich</p>
+      <div class="item"><span class="item-name">Veg Sandwich</span><span class="item-price">40</span></div>
+      <div class="item"><span class="item-name">Veg Grilled Sandwich</span><span class="item-price">50</span></div>
+      <div class="item"><span class="item-name">Aloo Masala Sandwich</span><span class="item-price">50</span></div>
+      <div class="item"><span class="item-name">Veg Cheese Grilled Sandwich</span><span class="item-price">60</span></div>
+      <div class="item"><span class="item-name">Paneer Cheese Sandwich</span><span class="item-price">80</span></div>
+      <div class="item"><span class="item-name">Italian Sandwich</span><span class="item-price">70</span></div>
+      <div class="item"><span class="item-name">Special Sandwich</span><span class="item-price">99</span></div>
+    </div>
+
+    <div class="category">
+      <p class="category-name">Garlic Bread</p>
+      <div class="item"><span class="item-name">Cheese Chilli Garlic Bread</span><span class="item-price">70</span></div>
+    </div>
+  </div>
+
+  <!-- MAINS -->
+  <div class="menu-section" id="mains">
+    <div class="section-header">
+      <p class="section-label">Hearty Meals</p>
+      <h2 class="section-title">Mains & More</h2>
+    </div>
+
+    <div class="category">
+      <p class="category-name">Pasta</p>
+      <div class="item"><span class="item-name">Red Sauce Pasta</span><span class="item-price">99</span></div>
+      <div class="item"><span class="item-name">White Sauce Pasta</span><span class="item-price">110</span></div>
+      <div class="item"><span class="item-name">Pink Sauce Pasta</span><span class="item-price">100</span></div>
+    </div>
+
+    <div class="category">
+      <p class="category-name">Momos (DimSum)</p>
+      <div class="item"><span class="item-name">Veg. Steam Momo (6 pcs)</span><span class="item-price">60</span></div>
+      <div class="item"><span class="item-name">Veg. Fry Momo</span><span class="item-price">70</span></div>
+      <div class="item"><span class="item-name">Paneer Steam Momo</span><span class="item-price">80</span></div>
+      <div class="item"><span class="item-name">Paneer Fry Momo</span><span class="item-price">99</span></div>
+      <div class="item"><span class="item-name">Veg Kurkure Momo</span><span class="item-price">110</span></div>
+      <div class="item"><span class="item-name">Chinese Momos</span><span class="item-price">120</span></div>
+    </div>
+
+    <div class="category">
+      <p class="category-name">Raita</p>
+      <div class="item"><span class="item-name">Veg Raita</span><span class="item-price">30</span></div>
+      <div class="item"><span class="item-name">Bundi Raita</span><span class="item-price">40</span></div>
+    </div>
+  </div>
+
+  <!-- COMBOS -->
+  <div class="menu-section" id="combos">
+    <div class="section-header">
+      <p class="section-label">Best Value</p>
+      <h2 class="section-title">Combos</h2>
+    </div>
+
+    <p class="combo-group-title">Breakfast Combos</p>
+    <div class="combo-grid">
+      <div class="combo-card">
+        <p class="combo-name">Aloo Paratha (with curd) + Regular Chai</p>
+        <p class="combo-price">59</p>
+      </div>
+      <div class="combo-card">
+        <p class="combo-name">Paneer Paratha (with curd) + Veg Raita</p>
+        <p class="combo-price">99</p>
+      </div>
+    </div>
+
+    <p class="combo-group-title">Budget Friendly Combos</p>
+    <div class="combo-grid">
+      <div class="combo-card">
+        <p class="combo-name">Masala Maggie + Regular Chai</p>
+        <p class="combo-price">55</p>
+      </div>
+      <div class="combo-card">
+        <p class="combo-name">Aloo Tikki Burger + Mango Shake</p>
+        <p class="combo-price">79</p>
+      </div>
+      <div class="combo-card">
+        <p class="combo-name">Masala Patties + Hot Coffee</p>
+        <p class="combo-price">49</p>
+      </div>
+    </div>
+
+    <p class="combo-group-title">Premium & Heavy Combos</p>
+    <div class="combo-grid">
+      <div class="combo-card">
+        <p class="combo-name">Schezwan Fried Rice + Manchurian Gravy</p>
+        <p class="combo-price">160</p>
+      </div>
+      <div class="combo-card">
+        <p class="combo-name">Veg Cheese Burger + Loaded Cheese French Fries + Strawberry Shake</p>
+        <p class="combo-price">199</p>
+      </div>
+    </div>
+
+    <p class="combo-group-title">"All-Rounder" Sandwiches & Shakes</p>
+    <div class="combo-grid">
+      <div class="combo-card">
+        <p class="combo-name">Paneer Cheese Sandwich + Chocolate Shake</p>
+        <p class="combo-price">130</p>
+      </div>
+      <div class="combo-card">
+        <p class="combo-name">Veg Cheese Grilled Sandwich + Cold Coffee With Ice Cream</p>
+        <p class="combo-price">110</p>
+      </div>
+      <div class="combo-card">
+        <p class="combo-name">Aloo Masala Sandwich + Mint Mojito</p>
+        <p class="combo-price">99</p>
+      </div>
+    </div>
+
+    <p class="combo-group-title">Group & Sharing Combos</p>
+    <div class="combo-grid">
+      <div class="combo-card">
+        <p class="combo-name">Hakka Noodles + Veg. Kurkure Momo + Blueberry Mojito</p>
+        <p class="combo-price">220</p>
+      </div>
+      <div class="combo-card">
+        <p class="combo-name">Corn Cheese Pizza + Veg Cheese Spring Roll + Brownie Shake</p>
+        <p class="combo-price">260</p>
+      </div>
+      <div class="combo-card">
+        <p class="combo-name">Veg. Fry Momo + Paneer Kathi Roll + 2 Shakes (Mango/Vanilla)</p>
+        <p class="combo-price">240</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.menu-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
+</body>
+</html>
